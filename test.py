@@ -133,6 +133,34 @@ def click():
 		if input_back == False:
 			return 3
 
+def lock():
+	global topline
+	topline = "LOCKED"
+	global bottomline
+	bottomline = [" ", " ", "    _  _  _  _  _  _  ", " "]
+	drawtext(False)
+	print "Locked"
+	passcode = "021302" # DOWN SELECT UP BACK DOWN SELECT
+	entered = ""
+	while True:
+		inputopt = click()
+		entered = entered + str(inputopt)
+		disptext = "    _  _  _  _  _  _  "
+		disptext = disptext.replace('_', '*', len(entered))
+		bottomline = [" ", " ", disptext, " "]
+		drawtext(False)
+		if len(entered) == 6:
+			if entered == passcode:
+				main()
+			else:
+				bottomline = [" ", " ", "       INCORRECT  ", " "]
+				drawtext(False)
+				time.sleep(2)
+				bottomline = [" ", " ", "    _  _  _  _  _  _  ", " "]
+				drawtext(False)
+				entered = ""
+	print "Looped"
+
 def highlightIndex(i):
 	bottomline[0] = bottomline[0].lower()
 	bottomline[1] = bottomline[1].lower()
@@ -162,6 +190,7 @@ def main():
                         if optindex < 0:
                                 optindex = 0
 			highlightIndex(optindex)
+		if inputopt == 3:
+			lock()
 
-
-main()
+lock()
