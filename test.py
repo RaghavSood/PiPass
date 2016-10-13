@@ -142,6 +142,7 @@ def lock():
 	print "Locked"
 	passcode = "021302" # DOWN SELECT UP BACK DOWN SELECT
 	entered = ""
+	failcount = 0
 	while True:
 		inputopt = click()
 		entered = entered + str(inputopt)
@@ -153,9 +154,18 @@ def lock():
 			if entered == passcode:
 				main()
 			else:
+				failcount = failcount + 1
 				bottomline = [" ", " ", "       INCORRECT  ", " "]
 				drawtext(False)
 				time.sleep(2)
+				if failcount >= 3:
+					for timectr in range(0,30):
+						if timectr == 29:
+							bottomline = ["        Try Again", "            In ", "        + str(30 - timectr) + " second", " "]
+						else:
+							bottomline = ["        Try Again", "            In ", "       " + str(30 - timectr) + " seconds", " "]
+						drawtext(False)
+						time.sleep(1)
 				bottomline = [" ", " ", "    _  _  _  _  _  _  ", " "]
 				drawtext(False)
 				entered = ""
