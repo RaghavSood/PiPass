@@ -161,7 +161,7 @@ def lock():
 				if failcount >= 3:
 					for timectr in range(0,30):
 						if timectr == 29:
-							bottomline = ["        Try Again", "            In ", "        + str(30 - timectr) + " second", " "]
+							bottomline = ["        Try Again", "            In ", "        "+ str(30 - timectr) + " second", " "]
 						else:
 							bottomline = ["        Try Again", "            In ", "       " + str(30 - timectr) + " seconds", " "]
 						drawtext(False)
