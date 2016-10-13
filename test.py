@@ -1,5 +1,6 @@
 import RPi.GPIO as GPIO
 import time
+import math
  
 import Adafruit_GPIO.SPI as SPI
 import Adafruit_SSD1306
@@ -75,11 +76,46 @@ def bottomtext(s, i):
         bottomline = s
         drawtext(i)
 
+def by2(s):
+	out = []
+	if s == "abcdefghijklmnopqrstuvwxyz0123456789@.":
+		out = ["abcdefghijklmnopqrstuvwxyz", "1234567890@."]
+		return out
+	size = int(math.ceil(len(s)/2.0) * -1)
+	print size
+	while len(s):
+		out.insert(0, s[size:])
+		s = s[:size]
+	return out
+
+def input():
+	keyboard = "abcdefghijklmnopqrstuvwxyz0123456789@."
+	word = ""
+	oldtopline = topline
+	while True:
+		print "Word:", word
+		toptext(word, False)
+		numOpts = len(keyboard)
+		print str(numOpts) + " options"
+		options = by2(keyboard)
+		print options
+		if len(keyboard) == 1:
+			word = word + keyboard
+			keyboard = "abcdefghijklmnopqrstuvwxyz0123456789@."
+			continue
+		else:
+			bottomtext(["Use the buttons", "to choose groups", options[0], options[1]], False)
+			option = click()
+			if option == 2:
+				toptext(oldtopline, False)
+				return word
+			keyboard = options[int(option)]
+
 def click():
 	while True:
 		input_select = GPIO.input(12)
 		if input_select == False:
-			return 0
+			return 2
 			#time.sleep(0.2)
 		input_up = GPIO.input(20)
 		if input_up == False:
@@ -87,18 +123,19 @@ def click():
 			#time.sleep(0.2)
 		input_down = GPIO.input(21)
 		if input_down == False:
-			return 2
+			return 0
 			#time.sleep(0.2)	
-
 def main():
 	toptext("Main Menu", False)
+	bottomtext(["Select:", "None", "Input", "None"], False)
 	while True:
-		input = click()
-		if input == 0:
-			bottomtext(["Buttons:", "Up", "SELECT", "Down"], False)
-		if input == 1:
+		inputopt = click()
+		if inputopt == 2:
+			textin = input()
+			bottomtext(["Select:", "None", "Input", textin], False)
+		if inputopt == 1:
 			bottomtext(["Buttons:", "UP", "Select", "Down"], False)
-		if input == 2:
+		if inputopt == 0:
 			bottomtext(["Buttons:", "Up", "Select", "DOWN"], False)
 
 #toptext("test", False)
