@@ -21,6 +21,7 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(12, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(20, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(21, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(26, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 disp = Adafruit_SSD1306.SSD1306_128_64(rst=RST)
 disp.begin()
@@ -109,6 +110,9 @@ def input():
 			if option == 2:
 				toptext(oldtopline, False)
 				return word
+			if option ==3:
+				toptext(oldtopline, False)
+				return "Cancelled"
 			keyboard = options[int(option)]
 
 def click():
@@ -124,23 +128,40 @@ def click():
 		input_down = GPIO.input(21)
 		if input_down == False:
 			return 0
-			#time.sleep(0.2)	
+			#time.sleep(0.2)
+		input_back = GPIO.input(26)	
+		if input_back == False:
+			return 3
+
+def highlightIndex(i):
+	bottomline[0] = bottomline[0].lower()
+	bottomline[1] = bottomline[1].lower()
+	bottomline[2] = bottomline[2].lower()
+	bottomline[3] = bottomline[3].lower()
+	bottomline[i] = bottomline[i].upper()
+	drawtext(False)
+
 def main():
 	toptext("Main Menu", False)
-	bottomtext(["Select:", "None", "Input", "None"], False)
+	options = ["Retrieve", "Search", "Add", "Lock"]
+	bottomtext(options, False)
+	optindex = 0
 	while True:
+		highlightIndex(optindex)
 		inputopt = click()
 		if inputopt == 2:
 			textin = input()
 			bottomtext(["Select:", "None", "Input", textin], False)
 		if inputopt == 1:
-			bottomtext(["Buttons:", "UP", "Select", "Down"], False)
+			optindex = optindex + 1
+			if optindex >= len(options):
+				optindex = len(options) - 1
+			highlightIndex(optindex)
 		if inputopt == 0:
-			bottomtext(["Buttons:", "Up", "Select", "DOWN"], False)
+			optindex = optindex - 1
+                        if optindex < 0:
+                                optindex = 0
+			highlightIndex(optindex)
 
-#toptext("test", False)
-#time.sleep(2)
-#toptext("TEST123", False)
-#time.sleep(2)
-#bottomtext(["Line 1", "Line 2", "", "Line 4"], True)
+
 main()
