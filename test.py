@@ -47,6 +47,8 @@ font = ImageFont.truetype(font='font.ttf',size=9,index=0,encoding='unic')
 topline = ""
 bottomline = ["", "", "", ""]
 
+folders = ["Email", "Bank", "Social", "Device", "Accounts", "Misc", "Temp", "Temp2", "Temp3", "Temp4", "Temp5", "Temp6"]
+
 def drawtext(i):
 	global image
         global draw
@@ -179,17 +181,59 @@ def highlightIndex(i):
 	bottomline[i] = bottomline[i].upper()
 	drawtext(False)
 
+def highlightList(i, l):
+	global bottomline
+	listsize = len(l)
+	if int(i) <= 1:
+		bottomline = [l[0], l[1], l[2], l[3]]
+		highlightIndex(i)
+	elif int(i) >= (listsize-2):
+		bottomline = [l[listsize-4], l[listsize-3], l[listsize-2], l[listsize-1]]
+		if int(i) == listsize - 1:
+			highlightIndex(3)
+		else:
+			highlightIndex(2)
+	else:
+		bottomline = [l[i-1], l[i], l[i+1], l[i+2]]
+		highlightIndex(1)
+
+def foldernav(n):
+	global folders
+	global bottomline
+	optindex = 0
+	toptext("Folders", False)
+	highlightList(optindex, folders)
+	while True:
+                inputopt = click()
+                if inputopt == 2:
+                        if n == 0:
+				list(optindex)
+			elif n == 1:
+				generateIn(optindex)
+                if inputopt == 1:
+                        optindex = optindex + 1
+                        if optindex >= len(folders):
+                                optindex = len(folders) - 1
+                        highlightList(optindex, folders)
+                if inputopt == 0:
+                        optindex = optindex - 1
+                        if optindex < 0:
+                                optindex = 0
+                        highlightList(optindex, folders)
+                if inputopt == 3:
+                        main() 
+
 def main():
 	toptext("Main Menu", False)
-	options = ["Retrieve", "Search", "Add", "Lock"]
+	options = ["Retrieve", "Search", "Generate", "Lock"]
 	bottomtext(options, False)
 	optindex = 0
 	while True:
 		highlightIndex(optindex)
 		inputopt = click()
 		if inputopt == 2:
-			textin = input()
-			bottomtext(["Select:", "None", "Input", textin], False)
+			if optindex == 0:
+				foldernav(0)
 		if inputopt == 1:
 			optindex = optindex + 1
 			if optindex >= len(options):
