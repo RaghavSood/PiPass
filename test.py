@@ -12,10 +12,6 @@ from PIL import ImageOps
 # Raspberry Pi pin configuration:
 RST = 24
 # Note the following are only used with SPI:
-DC = 23
-SPI_PORT = 0
-SPI_DEVICE = 0
-
 GPIO.setmode(GPIO.BCM)
 
 GPIO.setup(12, GPIO.IN, pull_up_down=GPIO.PUD_UP)
@@ -29,7 +25,7 @@ disp.begin()
 # Clear display.
 disp.clear()
 disp.display()
- 
+
 # Create blank image for drawing.
 # Make sure to create image with mode '1' for 1-bit color.
 width = disp.width
@@ -47,7 +43,7 @@ font = ImageFont.truetype(font='font.ttf',size=9,index=0,encoding='unic')
 topline = ""
 bottomline = ["", "", "", ""]
 
-folders = ["Email", "Bank", "Social", "Device", "Accounts", "Misc", "Temp", "Temp2", "Temp3", "Temp4", "Temp5", "Temp6"]
+folders = ["Email", "Bank", "Social", "Device", "Accounts", "Misc"]
 
 def drawtext(i):
 	global image
@@ -122,15 +118,12 @@ def click():
 		input_select = GPIO.input(12)
 		if input_select == False:
 			return 2
-			#time.sleep(0.2)
 		input_up = GPIO.input(20)
 		if input_up == False:
 			return 1
-			#time.sleep(0.2)
 		input_down = GPIO.input(21)
 		if input_down == False:
 			return 0
-			#time.sleep(0.2)
 		input_back = GPIO.input(26)	
 		if input_back == False:
 			return 3
@@ -234,6 +227,10 @@ def main():
 		if inputopt == 2:
 			if optindex == 0:
 				foldernav(0)
+			if optindex == 2:
+				foldernav(2)
+			if optindex == 3:
+				lock()
 		if inputopt == 1:
 			optindex = optindex + 1
 			if optindex >= len(options):
@@ -247,4 +244,4 @@ def main():
 		if inputopt == 3:
 			lock()
 
-lock()
+main()
